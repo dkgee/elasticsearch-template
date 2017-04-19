@@ -1,12 +1,13 @@
 # elasticsearch-template
-es5.2 Java API二次封装
 
-进行打包安装本地仓库后，在POM文件中引用elasticsearch-template
-Spring项目使用方式如下
-  <1>，将其resources目录下elasticsearch 配置拷贝至项目资源目录，修改elasticsearch.properties，elasticsearch-conf.properties中配置参数
-  <2>，程序中引入客户端模板调用，再开发即可。
-    参考如下：
-    
+es5.2 Java API二次封装<br>
+
+进行打包安装本地仓库后，在POM文件中引用elasticsearch-template    
+Spring项目使用方式如下  
+ * 将其resources目录下elasticsearch 配置拷贝至项目资源目录，修改elasticsearch.properties，elasticsearch-conf.properties中配置参数  
+ * 程序中引入客户端模板调用，再开发即可  
+     参考如下：
+ <code>
     @Autowired
     protected ClientTemplate clientTemplate;
 
@@ -86,5 +87,6 @@ Spring项目使用方式如下
         }
     }
 
+  </code>
 
 
