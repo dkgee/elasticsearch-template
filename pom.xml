@@ -4,14 +4,15 @@
 
   <groupId>org.projectx</groupId>
   <artifactId>elasticsearch-template</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>6.3.2</version>
   <packaging>jar</packaging>
 
   <name>elasticsearch-template</name>
   <url>http://maven.apache.org</url>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <spring.version>5.0.8.RELEASE</spring.version>
   </properties>
 
   <dependencies>
@@ -26,39 +27,39 @@
       <dependency>
           <groupId>org.elasticsearch</groupId>
           <artifactId>elasticsearch</artifactId>
-          <version>5.2.0</version>
+          <version>6.3.2</version>
       </dependency>
       <dependency>
           <groupId>org.elasticsearch.client</groupId>
           <artifactId>transport</artifactId>
-          <version>5.2.0</version>
+          <version>6.3.2</version>
       </dependency>
       <dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>6.4.0</version>
+			<version>7.4.0</version>
 		</dependency>
 		
 		<!-- spring beans -->
 		<dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>4.3.0.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
 		<dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-            <version>4.3.0.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
       <dependency>
           <groupId>org.springframework</groupId>
           <artifactId>spring-context</artifactId>
-          <version>4.3.0.RELEASE</version>
+          <version>${spring.version}</version>
       </dependency>
 		 <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>4.3.0.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
         
         <!-- commons -->

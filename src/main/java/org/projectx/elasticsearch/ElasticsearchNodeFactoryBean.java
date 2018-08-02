@@ -1,10 +1,9 @@
 package org.projectx.elasticsearch;
 
-import org.elasticsearch.common.io.Streams;
+import org.apache.commons.io.input.ReaderInputStream;
+import org.elasticsearch.common.io.stream.InputStreamStreamInput;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.settings.loader.SettingsLoader;
 import org.elasticsearch.node.Node;
-import org.projectx.setting.PropertiesSettingsLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -68,18 +68,21 @@ public class ElasticsearchNodeFactoryBean implements FactoryBean<Node>, Initiali
 	private void internalCreateNode(){
 		Settings.Builder builder = Settings.builder();
 
-		if(null != configLocation)
+		if(null != configLocation){
 			internalLoadSettings(builder, configLocation);
-		
+		}
+
 		if(null != configLocations){
 			for(final Resource location:configLocations){
 				internalLoadSettings(builder, location);
 			}
 		}
 		
-		if(null != settings)
-			builder.put(settings);
-		
+		if(null != settings){
+			logger.error("需要从Map的加载setting,暂未实现");
+//			builder.put(settings);
+		}
+
 		node = new Node(builder.build());
 	}
 	
@@ -89,11 +92,9 @@ public class ElasticsearchNodeFactoryBean implements FactoryBean<Node>, Initiali
 			if(logger.isInfoEnabled()){
 				logger.info("正在创建节点，从" + fileName +"加载配置文件...");
 			}
-			//builder.loadFromStream(fileName, configLocation.getInputStream());
 			if(fileName.endsWith(".properties")){
-				SettingsLoader settingsLoader = new PropertiesSettingsLoader();
-				Map<String, String> loadedSettings =
-						settingsLoader.load(Streams.copyToString(new InputStreamReader(configLocation.getInputStream(), StandardCharsets.UTF_8)));
+				InputStream inputStream = new ReaderInputStream(new InputStreamReader(configLocation.getInputStream(), StandardCharsets.UTF_8));
+				Settings loadedSettings = Settings.readSettingsFromStream(new InputStreamStreamInput(inputStream));
 				if(!loadedSettings.isEmpty()){
 					builder.put(loadedSettings);
 				}

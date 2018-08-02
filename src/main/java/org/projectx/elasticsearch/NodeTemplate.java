@@ -219,7 +219,7 @@ public class NodeTemplate implements IndexSearchEngine<SearchHit>, NodeOperation
 		final SearchResponse response = executeGet(new ClientCallback<SearchResponse>() {
 			@Override
 			public ActionFuture<SearchResponse> execute(final Client client) {
-				final SearchRequest request = Requests.searchRequest().searchType(SearchType.DFS_QUERY_AND_FETCH);
+				final SearchRequest request = Requests.searchRequest().searchType(SearchType.DFS_QUERY_THEN_FETCH);
 				final SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
 				sourceBuilder.query(query);
 				sourceBuilder.size(maxResults);

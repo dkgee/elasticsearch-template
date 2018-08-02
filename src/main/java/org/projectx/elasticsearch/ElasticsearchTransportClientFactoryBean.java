@@ -1,13 +1,15 @@
 package org.projectx.elasticsearch;
 
+import com.github.mustachejava.functions.CommentFunction;
+import org.apache.commons.io.input.ReaderInputStream;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.io.Streams;
+import org.elasticsearch.common.io.stream.InputStreamStreamInput;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.settings.loader.SettingsLoader;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.json.JsonXContent;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
-import org.projectx.setting.PropertiesSettingsLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -76,18 +79,22 @@ public class ElasticsearchTransportClientFactoryBean implements FactoryBean<Clie
 	private void internalCreateTransportClient(){
 		Settings.Builder builder = Settings.builder();
 		
-		if(null != configLocation)
+		if(null != configLocation){
 			internalLoadSettings(builder, configLocation);
-		
+		}
+
 		if(null != configLocations){
 			for(final Resource location:configLocations){
 				internalLoadSettings(builder, location);
 			}
 		}
 		
-		if(null != settings)
-			builder.put(settings);
-		
+		if(null != settings){
+			//从配置文件中加载setting
+			logger.error("需要从Map的加载setting,暂未实现");
+//			builder.put(settings);
+		}
+
 		client = new PreBuiltTransportClient(builder.build());
 		
 		if(transportAddresses != null){
@@ -96,7 +103,7 @@ public class ElasticsearchTransportClientFactoryBean implements FactoryBean<Clie
 					logger.info("正在添加 transport IP地址:" + address.getKey() + " 端口:" + address.getValue());
 					try {
 						InetAddress e1 = InetAddress.getByName(address.getKey());
-						((PreBuiltTransportClient)client).addTransportAddress(new InetSocketTransportAddress(e1, address.getValue()));
+						((PreBuiltTransportClient)client).addTransportAddress(new TransportAddress(e1, address.getValue()));
 					} catch (UnknownHostException e) {
 						logger.info("解析主机地址异常", e);
 					}
@@ -111,11 +118,9 @@ public class ElasticsearchTransportClientFactoryBean implements FactoryBean<Clie
 			if(logger.isInfoEnabled()){
 				logger.info("正在从" + fileName +"加载配置文件...");
 			}
-			//builder.loadFromStream(fileName, configLocation.getInputStream());
 			if(fileName.endsWith(".properties")){
-				SettingsLoader settingsLoader = new PropertiesSettingsLoader();
-				Map<String, String> loadedSettings =
-						settingsLoader.load(Streams.copyToString(new InputStreamReader(configLocation.getInputStream(), StandardCharsets.UTF_8)));
+				InputStream inputStream = new ReaderInputStream(new InputStreamReader(configLocation.getInputStream(), StandardCharsets.UTF_8));
+				Settings loadedSettings = Settings.readSettingsFromStream(new InputStreamStreamInput(inputStream));
 				if(!loadedSettings.isEmpty()){
 					builder.put(loadedSettings);
 				}

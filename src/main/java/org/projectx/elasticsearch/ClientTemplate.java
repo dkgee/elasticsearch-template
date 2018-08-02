@@ -64,12 +64,14 @@ public class ClientTemplate implements IndexSearchEngine<SearchHit>, NodeOperati
 					IndicesAdminClient client) {
 				CreateIndexRequest request = Requests.createIndexRequest(indexName);
 				
-				if(settings != null )
+				if(settings != null ){
 					request.settings(settings);
-				
-				if(indexType != null && mapping != null)
+				}
+
+				if(indexType != null && mapping != null){
 					request.mapping(indexType, mapping);
-					
+				}
+
 				return client.create(request);
 			}
 		});
@@ -226,7 +228,7 @@ public class ClientTemplate implements IndexSearchEngine<SearchHit>, NodeOperati
 		final SearchResponse response = executeGet(new ClientCallback<SearchResponse>() {
 			@Override
 			public ActionFuture<SearchResponse> execute(final Client client) {
-				final SearchRequest request = Requests.searchRequest().searchType(SearchType.DFS_QUERY_AND_FETCH);
+				final SearchRequest request = Requests.searchRequest().searchType(SearchType.DFS_QUERY_THEN_FETCH);
 				final SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
 				sourceBuilder.query(query).size(maxResults);
 				request.source(sourceBuilder);
