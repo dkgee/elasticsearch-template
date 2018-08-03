@@ -79,7 +79,7 @@ public class ElasticsearchTransportClientFactoryBean implements FactoryBean<Clie
 	private void internalCreateTransportClient(){
 		Settings.Builder builder = Settings.builder();
 		
-		if(null != configLocation){
+		/*if(null != configLocation){
 			internalLoadSettings(builder, configLocation);
 		}
 
@@ -93,7 +93,9 @@ public class ElasticsearchTransportClientFactoryBean implements FactoryBean<Clie
 			//从配置文件中加载setting
 			logger.error("需要从Map的加载setting,暂未实现");
 //			builder.put(settings);
-		}
+		}*/
+		builder.put("cluster.name","cms-tsp");
+		builder.put("client.transport.sniff","true");
 
 		client = new PreBuiltTransportClient(builder.build());
 		
@@ -119,8 +121,9 @@ public class ElasticsearchTransportClientFactoryBean implements FactoryBean<Clie
 				logger.info("正在从" + fileName +"加载配置文件...");
 			}
 			if(fileName.endsWith(".properties")){
-				InputStream inputStream = new ReaderInputStream(new InputStreamReader(configLocation.getInputStream(), StandardCharsets.UTF_8));
-				Settings loadedSettings = Settings.readSettingsFromStream(new InputStreamStreamInput(inputStream));
+//				InputStream inputStream = new ReaderInputStream(new InputStreamReader(configLocation.getInputStream(), StandardCharsets.UTF_8));
+//				InputStream inputStream = new InputStreamReader(configLocation.getInputStream(), StandardCharsets.UTF_8);
+				Settings loadedSettings = Settings.readSettingsFromStream(new InputStreamStreamInput(configLocation.getInputStream()));
 				if(!loadedSettings.isEmpty()){
 					builder.put(loadedSettings);
 				}

@@ -10,6 +10,7 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.Requests;
+import org.elasticsearch.cluster.metadata.AliasAction;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.junit.After;
@@ -72,8 +73,14 @@ public class ESClientTemplateTestBase {
 			public ActionFuture<IndicesAliasesResponse> execute(
 					IndicesAdminClient admin) {
 				IndicesAliasesRequest request = Requests.indexAliasesRequest();
-				//request.addAlias(indexAlias, indexName);
+//				request.addAlias(indexAlias, indexName);
 				//request.addAliasAction();
+
+				//添加索引别名
+				IndicesAliasesRequest.AliasActions aliasActions = new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD);
+				aliasActions.index(indexName);
+				aliasActions.alias(indexAlias);
+				request.addAliasAction(aliasActions);
 				return admin.aliases(request);
 			}
 		});
