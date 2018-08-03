@@ -20,12 +20,12 @@ import java.util.List;
 @ContextConfiguration(locations={"classpath:elasticsearch/applicationContext-elasticsearch.xml"})
 public class ESClientTemplateIntegrationTest extends ESClientTemplateTestBase{
 	
-	//@Test
+//	@Test
 	public void addAliases() {
 		addAliases("medicine_test","medicine_20160318");
 	}
 	
-	//@Test
+//	@Test
 	public void refresh(){
 		refreshIndex();
 	}
